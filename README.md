@@ -162,8 +162,11 @@ http://127.0.0.1:8787
 The launcher explicitly binds persistent writable state under
 `~/.local/share/reproducible-env/rstudio/`. This is required because an
 Apptainer SIF is immutable. `--writable-tmpfs` is only an ephemeral safety
-layer and is not used for RStudio's persistent state. The secure-cookie key is
-created in the host-owned runtime directory and reused across restarts.
+layer and is not used for RStudio's persistent state. The launcher creates a
+runtime user overlay for `/etc/passwd` and `/etc/group`, binds a host-owned
+home, `/tmp`, `/var/lib/rstudio-server`, and `/var/run/rstudio-server`, and
+uses a host-owned secure-cookie key. This follows Rocker's Apptainer pattern
+without hardcoding a username.
 
 If the browser reports a redirect loop, stop the server and inspect the paths:
 
@@ -172,7 +175,13 @@ make rstudio-diagnose
 ```
 
 To reset only RStudio state, remove
-`~/.local/share/reproducible-env/rstudio/` and start it again.
+`~/.local/share/reproducible-env/rstudio/` and start it again. This removes
+the host-backed work directory used by the previous launch.
+
+The launcher runs RStudio sessions as the current host user, dynamically
+adding that user to container passwd/group overlays. If a browser retains an
+old malformed secure-cookie, clear cookies for `127.0.0.1:8787` once after
+changing the runtime configuration.
 
 The launcher refuses non-loopback unauthenticated exposure unless `RSTUDIO_ALLOW_REMOTE=1` is explicitly set. For remote/HPC use, prefer SSH port forwarding.
 

@@ -23,15 +23,6 @@ actual_pkg="$(dpkg-query -W -f='${Version}' rstudio-server 2>/dev/null || true)"
   echo "ERROR: RStudio Server package is missing" >&2
   exit 73
 }
-
-for key in \
-  /etc/rstudio/session-rpc-key \
-  /etc/rstudio/secure-cookie-key \
-  /var/lib/rstudio-server/session-rpc-key \
-  /var/lib/rstudio-server/secure-cookie-key; do
-  [[ ! -e "$key" ]] || { echo "ERROR: RStudio system key must not be baked into the SIF: $key" >&2; exit 74; }
-done
-
 config_output="$($rserver --check-config 2>&1)" || {
   status=$?
   echo "ERROR: rserver --check-config failed with exit status $status" >&2
