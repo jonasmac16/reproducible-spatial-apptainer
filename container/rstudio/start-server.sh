@@ -20,9 +20,9 @@ case "$address" in
     ;;
 esac
 
-runtime="${RSTUDIO_RUNTIME_DIR:-${HOME}/.local/share/rstudio-spatial-container/runtime-${port}}"
+runtime="${RSTUDIO_RUNTIME_DIR:-${HOME}/.local/share/reproducible-env/rstudio/runtime}"
 config="${RSTUDIO_CONFIG_HOME:-${HOME}/.config/rstudio-spatial-container}"
-data="${RSTUDIO_DATA_HOME:-${HOME}/.local/share/rstudio-spatial-container/data}"
+data="${RSTUDIO_DATA_HOME:-${HOME}/.local/share/reproducible-env/rstudio/data}"
 mkdir -p "$runtime" "$config" "$data" "$runtime/cache" "$runtime/config" "$runtime/tmp" "$runtime/run"
 chmod 0700 "$runtime" "$config" "$data"
 
@@ -36,7 +36,8 @@ export XDG_CONFIG_HOME="$runtime/config"
 export TMPDIR="$runtime/tmp"
 export HOME="${RSTUDIO_HOME:-$HOME}"
 
-cookie_key="$runtime/secure-cookie-key"
+cookie_key="${RSTUDIO_COOKIE_KEY:-$runtime/secure-cookie-key}"
+mkdir -p "$(dirname "$cookie_key")"
 if [[ ! -s "$cookie_key" ]]; then
   umask 077
   openssl rand -hex 16 > "$cookie_key"
@@ -50,9 +51,9 @@ printf 'R %s\n' "$(R --version | sed -n '1p')"
 printf 'Python %s\n' "$(/opt/project/python/bin/python --version 2>&1)"
 printf 'Project %s\n' "$project_dir"
 printf 'Open http://%s:%s\n' "$address" "$port"
-
 exec /usr/lib/rstudio-server/bin/rserver \
   --server-user="$user" \
+  --auth-none=1 \
   --server-daemonize=0 \
   --server-pid-file="$runtime/rserver.pid" \
   --server-working-dir="$runtime/run" \

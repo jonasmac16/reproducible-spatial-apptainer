@@ -1,23 +1,24 @@
 Bootstrap: docker
-From: ghcr.io/rocker-org/r-ver@sha256:8c6bcd19aae3490ebe75f7d06842f4046dc2ce23822d74eac450844af826e108
+From: @BASE_IMAGE@
 
 %labels
   org.opencontainers.image.title "Reproducible scientific R/Python environment"
-  org.opencontainers.image.description "Direct-from-OCI Apptainer environment; exact language dependencies are restored from project lockfiles"
-  org.opencontainers.image.base.digest "sha256:8c6bcd19aae3490ebe75f7d06842f4046dc2ce23822d74eac450844af826e108"
+  org.opencontainers.image.description "Profile-driven Apptainer environment with optional RStudio Server"
+  org.opencontainers.image.base.digest "@BASE_DIGEST@"
+  io.repro.profile "@PROFILE@"
+  io.repro.build.mode "@BUILD_MODE@"
   io.repro.r.version "4.6.1"
   io.repro.python.version "3.13.15"
   io.repro.bioconductor.version "3.23"
-  io.repro.rstudio.server "2026.07.1-147"
+  io.repro.rstudio.enabled "@RSTUDIO_ENABLED@"
 
 %files
   versions.env /opt/project/versions.env
   env /opt/project/env
   container/scripts /opt/project/build-scripts
-  container/rstudio/module.env /opt/rstudio/module.env
   container/rstudio/defaults /opt/rstudio-defaults
-  container/rstudio/install.sh /opt/rstudio/install.sh
   container/rstudio/start-server.sh /opt/rstudio/start-server.sh
+  container/rstudio/validate.sh /opt/rstudio/validate.sh
 
 %post
   set -eux
@@ -27,10 +28,13 @@ From: ghcr.io/rocker-org/r-ver@sha256:8c6bcd19aae3490ebe75f7d06842f4046dc2ce2382
   export LANG=C.UTF-8 LC_ALL=C.UTF-8
   export TMPDIR=/var/tmp/project-build
   export UV_CACHE_DIR="$TMPDIR/uv-cache"
+  export RSTUDIO_ENABLED="@RSTUDIO_ENABLED@"
   mkdir -p "$TMPDIR" "$UV_CACHE_DIR" /opt/project/R/library /opt/project/python /opt/provenance
-  chmod +x /opt/project/build-scripts/*.sh
+  chmod +x /opt/project/build-scripts/*.sh /opt/rstudio/*.sh
   {
-    echo "PROFILE=$(cat /opt/project/env/PROFILE 2>/dev/null || echo custom)"
+    echo "PROFILE=@PROFILE@"
+    echo "BUILD_MODE=@BUILD_MODE@"
+    echo "RSTUDIO_ENABLED=$RSTUDIO_ENABLED"
     echo "BUILD_DATE_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "SOURCE_COMMIT=recorded-by-release-manifest"
   } > /opt/provenance/build-info.env
@@ -62,9 +66,9 @@ From: ghcr.io/rocker-org/r-ver@sha256:8c6bcd19aae3490ebe75f7d06842f4046dc2ce2382
   test -s /opt/project/env/python/uv.lock
   test -s /opt/project/env/R/renv.lock
 
-  chmod +x /opt/rstudio/install.sh /opt/rstudio/start-server.sh
-  /opt/rstudio/install.sh
-
+  if [ "$RSTUDIO_ENABLED" = 1 ]; then
+    /usr/lib/rstudio-server/bin/rserver --check-config
+  fi
   /opt/project/build-scripts/validate.sh
 
   cp /opt/project/build-scripts/provenance.sh /usr/local/bin/environment-provenance
@@ -81,6 +85,9 @@ From: ghcr.io/rocker-org/r-ver@sha256:8c6bcd19aae3490ebe75f7d06842f4046dc2ce2382
   rm -rf /var/lib/apt/lists/* /root/.cache "$TMPDIR" /var/tmp/tool-install
 
 %environment
+  export RSTUDIO_ENABLED="@RSTUDIO_ENABLED@"
+  export BUILD_MODE="@BUILD_MODE@"
+  export ENVIRONMENT_PROFILE="@PROFILE@"
   export PATH=/opt/project/python/bin:/usr/local/bin:$PATH
   export VIRTUAL_ENV=/opt/project/python
   export RETICULATE_PYTHON=/opt/project/python/bin/python
@@ -108,8 +115,6 @@ From: ghcr.io/rocker-org/r-ver@sha256:8c6bcd19aae3490ebe75f7d06842f4046dc2ce2382
   exec "$@"
 
 %help
-  Standalone direct-from-OCI scientific environment.
-
+  Profile-driven scientific environment.
+  Build mode: @BUILD_MODE@. Profile: @PROFILE@.
   Runtime dependencies are embedded in /opt/project/R/library and /opt/project/python.
-  Input data, source code and output directories should be bind-mounted at runtime.
-  Run `environment-provenance` for recorded build and dependency information.

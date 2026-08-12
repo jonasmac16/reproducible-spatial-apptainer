@@ -17,9 +17,8 @@ A single-repository, publication-oriented Apptainer environment for spatial tran
 ```text
 .
 ├── container/
-│   ├── environment.def
+│   ├── environment.def.in   # rendered for each profile/build mode
 │   ├── rstudio/
-│   │   ├── install.sh
 │   │   ├── validate.sh
 │   │   ├── start-server.sh
 │   │   ├── module.env
@@ -113,6 +112,29 @@ The R configuration uses a single frozen Posit Public Package Manager snapshot f
 
 The snapshot is intentionally not `latest`. Update it deliberately before regenerating `renv.lock`.
 
+## Profiles and Build Modes
+
+The repository is a general-purpose environment builder. Profiles provide the
+readable package manifests and can be expanded without changing the builder.
+The included profiles are:
+
+```bash
+make profiles
+make profile PROFILE=base
+make profile PROFILE=spatial
+```
+
+RStudio is included by default. Headless images omit RStudio and are smaller:
+
+```bash
+make lock PROFILE=spatial
+make build PROFILE=spatial
+make build PROFILE=spatial RSTUDIO=0
+```
+
+Use matching `RSTUDIO` values for lock resolution and final builds. The lock
+resolver and final image always use the same pinned OCI base.
+
 ## RStudio Server
 
 RStudio Server is installed **inside the final SIF**. It is maintained under `container/rstudio/` in this same repository rather than in a separate container.
@@ -137,7 +159,20 @@ Open:
 http://127.0.0.1:8787
 ```
 
-If the host configuration directory is absent or empty, the conservative defaults under `container/rstudio/defaults/` are copied into user-owned container-side state. Personal themes, keybindings, snippets, and templates can be maintained on the host without changing the SIF.
+The launcher explicitly binds persistent writable state under
+`~/.local/share/reproducible-env/rstudio/`. This is required because an
+Apptainer SIF is immutable. `--writable-tmpfs` is only an ephemeral safety
+layer and is not used for RStudio's persistent state. The secure-cookie key is
+created in the host-owned runtime directory and reused across restarts.
+
+If the browser reports a redirect loop, stop the server and inspect the paths:
+
+```bash
+make rstudio-diagnose
+```
+
+To reset only RStudio state, remove
+`~/.local/share/reproducible-env/rstudio/` and start it again.
 
 The launcher refuses non-loopback unauthenticated exposure unless `RSTUDIO_ALLOW_REMOTE=1` is explicitly set. For remote/HPC use, prefer SSH port forwarding.
 
@@ -187,7 +222,7 @@ Readers should normally **download the published SIF** rather than rebuild it. T
 | uv | 0.12.3 |
 | renv | 1.2.3 |
 | Quarto | 1.9.38 |
-| RStudio Server | 2026.07.1-147 |
+| RStudio Server | supplied by pinned `rocker/rstudio:4.6.1` base in interactive mode |
 | R package repository | frozen PPM snapshot in `versions.env` |
 | R lock | `env/R/renv.lock` |
 | Python lock | `env/python/uv.lock` |

@@ -44,7 +44,7 @@ PY
     Rscript -e 'library(SpatialExperiment); library(scater); library(Seurat)'
 fi
 
-if [[ -x /opt/rstudio/validate.sh ]]; then
+if [[ "${RSTUDIO_ENABLED:-1}" == 1 && -x /opt/rstudio/validate.sh ]]; then
   /opt/rstudio/validate.sh
 fi
 

@@ -6,6 +6,12 @@ cd "$root"
 source "$root/scripts/lib-build.sh"
 
 APPTAINER="${APPTAINER:-apptainer}"
+PROFILE="${PROFILE:-spatial}"
+RSTUDIO="${RSTUDIO:-1}"
+active_profile="$(tr -d '\n' < "$root/env/PROFILE" 2>/dev/null || true)"
+if [[ "$active_profile" != "$PROFILE" ]]; then
+  "$root/scripts/select-profile.sh" "$PROFILE"
+fi
 resolver="$root/.build/resolver.sif"
 pylock="$root/env/python/uv.lock"
 rlock="$root/env/R/renv.lock"
@@ -14,6 +20,7 @@ mkdir -p "$root/.build"
 apptainer_bin="$(resolve_apptainer_binary)"
 make_apptainer_build_command "$apptainer_bin"
 make_apptainer_build_flags
+definition="$($root/scripts/render-definition.sh)"
 
 pybak=""; rbak=""
 [[ -f "$pylock" ]] && { pybak="$root/.build/uv.lock.bak"; cp "$pylock" "$pybak"; }
@@ -33,9 +40,9 @@ rm -f "$pylock" "$rlock" "$resolver"
 
 printf 'Building lock resolver with:' >&2
 printf ' %q' "${APPTAINER_BUILD_CMD[@]}" "build" "${APPTAINER_BUILD_FLAGS[@]}" >&2
-printf ' <resolver.sif> <environment.def>\n' >&2
+printf ' <resolver.sif> %q\n' "$definition" >&2
 
-"${APPTAINER_BUILD_CMD[@]}" build "${APPTAINER_BUILD_FLAGS[@]}" "$resolver" "$root/container/environment.def"
+"${APPTAINER_BUILD_CMD[@]}" build "${APPTAINER_BUILD_FLAGS[@]}" "$resolver" "$definition"
 "$apptainer_bin" exec "$resolver" cat /opt/project/env/python/uv.lock > "$root/.build/uv.lock.new"
 "$apptainer_bin" exec "$resolver" cat /opt/project/env/R/renv.lock > "$root/.build/renv.lock.new"
 test -s "$root/.build/uv.lock.new" && test -s "$root/.build/renv.lock.new"

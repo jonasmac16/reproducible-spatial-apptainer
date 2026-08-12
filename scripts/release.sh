@@ -5,7 +5,10 @@ APPTAINER="${APPTAINER:-apptainer}"
 IMAGE="${IMAGE:-$root/dist/environment.sif}"
 RELEASE_VERSION="${RELEASE_VERSION:?set RELEASE_VERSION, e.g. manuscript-v1}"
 PROJECT_NAME="${PROJECT_NAME:-$(basename "$root")}"
+PROFILE="${PROFILE:-spatial}"
+RSTUDIO="${RSTUDIO:-1}"
 [[ -f "$IMAGE" ]] || { echo "Image not found: $IMAGE" >&2; exit 5; }
+definition="$($root/scripts/render-definition.sh)"
 outdir="$root/release/$RELEASE_VERSION"
 mkdir -p "$outdir"
 out="$outdir/${PROJECT_NAME}-${RELEASE_VERSION}.sif"
@@ -24,11 +27,13 @@ IMAGE_FILE=$(basename "$out")
 IMAGE_SHA256=$sha
 SOURCE_COMMIT=$commit
 SOURCE_DIRTY=$dirty
-DEFINITION_SHA256=$(sha256sum "$root/container/environment.def" | awk '{print $1}')
+DEFINITION_SHA256=$(sha256sum "$definition" | awk '{print $1}')
 VERSIONS_SHA256=$(sha256sum "$root/versions.env" | awk '{print $1}')
 PYTHON_LOCK_SHA256=$(sha256sum "$root/env/python/uv.lock" | awk '{print $1}')
 R_LOCK_SHA256=$(sha256sum "$root/env/R/renv.lock" | awk '{print $1}')
 R_PPM_SNAPSHOT=$(bash -c 'set -a; source "$1"; printf "%s" "$R_PPM_SNAPSHOT"' _ "$root/versions.env")
+PROFILE=${PROFILE:-spatial}
+RSTUDIO=${RSTUDIO:-1}
 EOF2
 "$APPTAINER" exec "$out" environment-provenance > "$outdir/environment-provenance.txt"
 if [[ -n "${PUBLISH_URI:-}" ]]; then

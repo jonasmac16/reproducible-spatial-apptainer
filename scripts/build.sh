@@ -7,19 +7,27 @@ source "$root/scripts/lib-build.sh"
 
 APPTAINER="${APPTAINER:-apptainer}"
 IMAGE="${IMAGE:-$root/dist/environment.sif}"
+PROFILE="${PROFILE:-spatial}"
+RSTUDIO="${RSTUDIO:-1}"
+active_profile="$(tr -d '\n' < "$root/env/PROFILE" 2>/dev/null || true)"
+[[ "$active_profile" == "$PROFILE" ]] || {
+  echo "Active profile is '$active_profile', requested '$PROFILE'; run 'make lock PROFILE=$PROFILE' first." >&2
+  exit 4
+}
 test -s "$root/env/python/uv.lock" || { echo "Missing env/python/uv.lock; run 'make lock'" >&2; exit 3; }
 test -s "$root/env/R/renv.lock" || { echo "Missing env/R/renv.lock; run 'make lock'" >&2; exit 3; }
 
 apptainer_bin="$(resolve_apptainer_binary)"
 make_apptainer_build_command "$apptainer_bin"
 make_apptainer_build_flags
+definition="$($root/scripts/render-definition.sh)"
 
 mkdir -p "$(dirname "$IMAGE")"
 rm -f "$IMAGE"
 printf 'Building final image with:' >&2
 printf ' %q' "${APPTAINER_BUILD_CMD[@]}" "build" "${APPTAINER_BUILD_FLAGS[@]}" >&2
-printf ' %q %q\n' "$IMAGE" "$root/container/environment.def" >&2
-"${APPTAINER_BUILD_CMD[@]}" build "${APPTAINER_BUILD_FLAGS[@]}" "$IMAGE" "$root/container/environment.def"
+printf ' %q %q\n' "$IMAGE" "$definition" >&2
+"${APPTAINER_BUILD_CMD[@]}" build "${APPTAINER_BUILD_FLAGS[@]}" "$IMAGE" "$definition"
 sha256sum "$IMAGE" > "$IMAGE.sha256"
 echo "Built: $IMAGE"
 cat "$IMAGE.sha256"
