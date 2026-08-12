@@ -1,0 +1,2 @@
+# Additional apt packages for the base profile (one per line; comments allowed).
+# Core compilers and common development libraries are installed by environment.def.

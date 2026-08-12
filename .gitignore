@@ -1,0 +1,8 @@
+.build/
+dist/*.sif
+dist/*.sha256
+*.sif
+.Rhistory
+.RData
+__pycache__/
+.pytest_cache/

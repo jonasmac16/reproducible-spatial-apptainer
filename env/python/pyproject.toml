@@ -1,0 +1,66 @@
+[project]
+name = "spatial-transcriptomics-workbench"
+version = "1.0.0"
+description = "Spatial transcriptomics QC, analysis, integration and deconvolution"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  # scverse / spatial object models and I/O
+  "anndata",
+  "scanpy",
+  "squidpy",
+  "spatialdata",
+  "spatialdata-io",
+  "spatialdata-plot",
+  "sopa",
+  "novae",
+  "mudata",
+  "muon",
+
+  # Probabilistic modelling / deconvolution
+  "scvi-tools",
+  "cell2location",
+
+  # QC, annotation, integration and inference
+  "scrublet",
+  "celltypist",
+  "harmonypy",
+  "bbknn",
+  "decoupler",
+  "liana",
+  "pydeseq2",
+  "scib-metrics",
+  "leidenalg",
+  "igraph",
+
+  # Images, geometry and scalable arrays/tables
+  "scikit-image",
+  "tifffile",
+  "imagecodecs",
+  "shapely",
+  "geopandas",
+  "xarray",
+  "zarr",
+  "dask[distributed]",
+  "pyarrow",
+  "polars",
+
+  # Scientific / plotting stack
+  "numpy",
+  "scipy",
+  "pandas",
+  "scikit-learn",
+  "statsmodels",
+  "matplotlib",
+  "plotly",
+  "packaging",
+
+  # Python -> R and interactive tooling
+  "rpy2",
+  "jupyterlab",
+  "ipykernel",
+  "jupytext",
+  "papermill",
+]
+
+[tool.uv]
+package = false

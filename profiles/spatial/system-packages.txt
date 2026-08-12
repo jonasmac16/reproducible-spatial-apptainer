@@ -1,0 +1,19 @@
+# Spatial / image / geospatial native dependencies.
+libhdf5-dev
+libfftw3-dev
+libgsl-dev
+libglpk-dev
+libgmp-dev
+libmpfr-dev
+libgeos-dev
+libgdal-dev
+libproj-dev
+libudunits2-dev
+libnetcdf-dev
+libprotobuf-dev
+protobuf-compiler
+libnlopt-dev
+libopenslide-dev
+libvips-dev
+libgl1
+libopenblas-dev
