@@ -52,7 +52,6 @@ printf 'Project %s\n' "$project_dir"
 printf 'Open http://%s:%s\n' "$address" "$port"
 
 exec /usr/lib/rstudio-server/bin/rserver \
-  --single-user-mode=1 \
   --server-user="$user" \
   --server-daemonize=0 \
   --server-pid-file="$runtime/rserver.pid" \

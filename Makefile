@@ -3,6 +3,8 @@ APPTAINER ?= apptainer
 BUILD_AS_ROOT ?= 0
 BUILD_FLAGS ?=
 IMAGE ?= $(CURDIR)/dist/environment.sif
+PROJECT ?= $(CURDIR)
+RSTUDIO_CONFIG_HOST ?= $(HOME)/.config/rstudio
 PROFILE ?= spatial
 CMD ?= bash
 
@@ -35,7 +37,7 @@ provenance:
 	$(APPTAINER) exec '$(IMAGE)' environment-provenance
 
 rstudio:
-	SIF='$(IMAGE)' PROJECT='$${PROJECT:-$$(pwd)}' RSTUDIO_CONFIG_HOST='$(RSTUDIO_CONFIG_HOST)' APPTAINER='$(APPTAINER)' ./container/rstudio/host/start-rstudio.sh
+	SIF='$(IMAGE)' PROJECT='$(abspath $(PROJECT))' RSTUDIO_CONFIG_HOST='$(RSTUDIO_CONFIG_HOST)' APPTAINER='$(APPTAINER)' ./container/rstudio/host/start-rstudio.sh
 
 release:
 	APPTAINER='$(APPTAINER)' IMAGE='$(IMAGE)' RELEASE_VERSION='$(RELEASE_VERSION)' PROJECT_NAME='$(PROJECT_NAME)' PUBLISH_URI='$(PUBLISH_URI)' ./scripts/release.sh

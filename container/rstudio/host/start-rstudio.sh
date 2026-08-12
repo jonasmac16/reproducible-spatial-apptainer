@@ -34,7 +34,6 @@ mkdir -p "${HOME}/.local/share/rstudio-spatial-container"
 exec "$APPTAINER" exec --cleanenv \
   --bind "${HOME}:${HOME}" \
   "${binds[@]}" \
-  --env "HOME=$HOME" \
   --env "RSTUDIO_PROJECT_DIR=/workspace/project" \
   --env "RSTUDIO_CONFIG_HOME=$config_target" \
   --env "RSTUDIO_DATA_HOME=${HOME}/.local/share/rstudio-spatial-container/data" \
