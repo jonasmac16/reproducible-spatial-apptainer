@@ -77,15 +77,23 @@ make profile PROFILE=base
 make profile PROFILE=spatial
 ```
 
+Each profile is maintained on a Git branch with the same name. Selecting a
+profile switches to that branch, creates it from the current branch when it
+does not exist, and preserves that branch's lockfiles. Profile switching is
+refused when the worktree has uncommitted changes. A newly created branch has
+its active manifests initialized and is ready for lock resolution; commit the
+manifests and generated locks on that profile branch.
+
 `base` is a compact scientific/interoperability environment. `spatial` is the complete spatial-transcriptomics stack developed for this project.
 
 The current spatial profile includes Scanpy, Squidpy, SpatialData, Sopa, scvi-tools, cell2location, CellTypist, Scrublet, LIANA, decoupler, PyDESeq2, scIB metrics, imaging/geospatial tools, and the corresponding R spatial/QC/deconvolution stack.
 
 ## Lock lifecycle
 
-First resolution:
+First resolution on a profile branch:
 
 ```bash
+make profile PROFILE=spatial
 make lock BUILD_AS_ROOT=1
 ```
 
@@ -96,7 +104,9 @@ env/python/uv.lock
 env/R/renv.lock
 ```
 
-Commit those files. They are then the authoritative project dependency specifications.
+Commit those files on the profile branch. They are then the authoritative
+dependency specifications for that profile. The general `main` branch does
+not carry profile-specific lockfiles.
 
 Final image:
 

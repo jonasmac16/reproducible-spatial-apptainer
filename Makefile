@@ -12,7 +12,7 @@ CMD ?= bash
 help:
 	@printf '%s\n' \
 	  'make profiles                      # list available environment profiles' \
-	  'make profile PROFILE=base|spatial  # select readable package manifests; removes locks' \
+	  'make profile PROFILE=base|spatial  # switch/create matching profile branch' \
 	  'make lock PROFILE=spatial          # resolve locks using the selected build mode' \
 	  'make lock BUILD_AS_ROOT=1          # build with sudo, no fakeroot flags' \
 	  'make build                         # interactive image with RStudio (default)' \
