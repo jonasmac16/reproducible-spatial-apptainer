@@ -78,7 +78,6 @@ exec "$APPTAINER" exec --cleanenv \
   --env "USER=$RSTUDIO_USER" \
   --env "LOGNAME=$RSTUDIO_USER" \
   --env "USERNAME=$RSTUDIO_USER" \
-  --env "HOME=/home/$RSTUDIO_USER" \
   --env "RSTUDIO_RUNTIME_DIR=/var/run/rstudio-server" \
   --env "RSTUDIO_CONFIG_HOME=$config_target" \
   --env "RSTUDIO_DATA_HOME=/var/lib/rstudio-server" \

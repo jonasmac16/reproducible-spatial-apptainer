@@ -178,6 +178,11 @@ home, `/tmp`, `/var/lib/rstudio-server`, and `/var/run/rstudio-server`, and
 uses a host-owned secure-cookie key. This follows Rocker's Apptainer pattern
 without hardcoding a username.
 
+RStudio sessions use an image-side wrapper that explicitly exports the
+container Python environment, `RETICULATE_PYTHON`, and the embedded R library
+paths. The project is mounted at `/workspace/project` and used as the RStudio
+server working directory.
+
 If the browser reports a redirect loop, stop the server and inspect the paths:
 
 ```bash

@@ -18,6 +18,7 @@ From: @BASE_IMAGE@
   container/scripts /opt/project/build-scripts
   container/rstudio/defaults /opt/rstudio-defaults
   container/rstudio/start-server.sh /opt/rstudio/start-server.sh
+  container/rstudio/rsession.sh /opt/rstudio/rsession.sh
   container/rstudio/validate.sh /opt/rstudio/validate.sh
 
 %post
