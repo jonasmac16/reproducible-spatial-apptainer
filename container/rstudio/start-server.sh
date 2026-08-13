@@ -40,6 +40,9 @@ export XDG_CACHE_HOME="$runtime/cache"
 export XDG_CONFIG_HOME="$runtime/config"
 export TMPDIR="$runtime/tmp"
 export HOME="${RSTUDIO_HOME:-$HOME}"
+export R_HOME=/usr/local/lib/R
+export R_LIBS_USER=/opt/project/R/library
+export R_LIBS_SITE=/opt/project/R/library:/opt/R/tooling:/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library
 
 cookie_key="${RSTUDIO_COOKIE_KEY:-/var/lib/rstudio-server/secure-cookie-key}"
 [[ -s "$cookie_key" ]] || { echo "ERROR: secure-cookie key is missing: $cookie_key" >&2; exit 83; }
@@ -62,4 +65,5 @@ exec /usr/lib/rstudio-server/bin/rserver \
   --secure-cookie-key-file="$cookie_key" \
   --www-address="$address" \
   --www-port="$port" \
-  --rsession-path=/opt/rstudio/rsession.sh
+  --rsession-path=/opt/rstudio/rsession.sh \
+  --rsession-which-r=/usr/local/bin/R
