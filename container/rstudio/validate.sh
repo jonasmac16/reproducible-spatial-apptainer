@@ -7,6 +7,7 @@ if [[ "${RSTUDIO_ENABLED:-1}" != 1 ]]; then
 fi
 rserver=/usr/lib/rstudio-server/bin/rserver
 rsession=/usr/lib/rstudio-server/bin/rsession
+wrapper=/opt/rstudio/rsession.sh
 
 for exe in "$rserver" "$rsession"; do
   [[ -x "$exe" ]] || { echo "ERROR: missing RStudio executable: $exe" >&2; exit 71; }
@@ -17,6 +18,7 @@ for exe in "$rserver" "$rsession"; do
     exit 72
   fi
 done
+[[ -x "$wrapper" ]] || { echo "ERROR: missing RStudio session wrapper: $wrapper" >&2; exit 76; }
 
 actual_pkg="$(dpkg-query -W -f='${Version}' rstudio-server 2>/dev/null || true)"
 [[ -n "$actual_pkg" ]] || {

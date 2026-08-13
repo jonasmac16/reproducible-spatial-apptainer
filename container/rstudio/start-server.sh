@@ -57,9 +57,9 @@ exec /usr/lib/rstudio-server/bin/rserver \
   --auth-validate-users=0 \
   --server-daemonize=0 \
   --server-pid-file="$runtime/rserver.pid" \
-  --server-working-dir="$runtime/run" \
+  --server-working-dir="$project_dir" \
   --server-data-dir="$data" \
   --secure-cookie-key-file="$cookie_key" \
   --www-address="$address" \
   --www-port="$port" \
-  --rsession-which-r=/usr/local/bin/R
+  --rsession-path=/opt/rstudio/rsession.sh
