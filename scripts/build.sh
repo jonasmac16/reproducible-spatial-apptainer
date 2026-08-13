@@ -7,7 +7,8 @@ source "$root/scripts/lib-build.sh"
 
 APPTAINER="${APPTAINER:-apptainer}"
 IMAGE="${IMAGE:-$root/dist/environment.sif}"
-PROFILE="${PROFILE:-spatial}"
+PROFILE="${PROFILE:-$(git branch --show-current)}"
+[[ -n "$PROFILE" ]] || { echo "ERROR: cannot determine the current profile branch." >&2; exit 4; }
 RSTUDIO="${RSTUDIO:-1}"
 current_branch="$(git branch --show-current)"
 [[ "$current_branch" == "$PROFILE" ]] || {
