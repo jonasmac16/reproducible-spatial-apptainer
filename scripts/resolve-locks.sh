@@ -6,8 +6,14 @@ cd "$root"
 source "$root/scripts/lib-build.sh"
 
 APPTAINER="${APPTAINER:-apptainer}"
-PROFILE="${PROFILE:-spatial}"
+PROFILE="${PROFILE:-$(git branch --show-current)}"
+[[ -n "$PROFILE" ]] || { echo "ERROR: cannot determine the current profile branch." >&2; exit 4; }
 RSTUDIO="${RSTUDIO:-1}"
+current_branch="$(git branch --show-current)"
+[[ "$current_branch" == "$PROFILE" ]] || {
+  echo "Current branch is '$current_branch', requested profile '$PROFILE'; run 'make profile PROFILE=$PROFILE' first." >&2
+  exit 4
+}
 active_profile="$(tr -d '\n' < "$root/env/PROFILE" 2>/dev/null || true)"
 if [[ "$active_profile" != "$PROFILE" ]]; then
   "$root/scripts/select-profile.sh" "$PROFILE"

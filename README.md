@@ -77,6 +77,10 @@ make profile PROFILE=base
 make profile PROFILE=spatial
 ```
 
+Once on a profile branch, `make lock` and `make build` default to the
+currently checked-out branch. You can still pass `PROFILE=` explicitly when
+the requested branch is already checked out.
+
 Each profile is maintained on a Git branch with the same name. Selecting a
 profile switches to that branch, creates it from the current branch when it
 does not exist, and preserves that branch's lockfiles. Profile switching is
