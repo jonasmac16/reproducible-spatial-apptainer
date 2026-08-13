@@ -5,7 +5,14 @@ BUILD_FLAGS ?=
 IMAGE ?= $(CURDIR)/dist/environment.sif
 PROJECT ?= $(CURDIR)
 RSTUDIO_CONFIG_HOST ?= $(HOME)/.config/rstudio
-PROFILE ?= spatial
+CURRENT_BRANCH := $(shell git branch --show-current 2>/dev/null)
+PROFILE ?= $(CURRENT_BRANCH)
+ifeq ($(strip $(PROFILE)),)
+PROFILE := spatial
+endif
+ifeq ($(strip $(RSTUDIO)),)
+RSTUDIO := 1
+endif
 CMD ?= bash
 
 .PHONY: help profiles profile lock build test provenance rstudio rstudio-diagnose run release fetch clean distclean
@@ -13,7 +20,7 @@ help:
 	@printf '%s\n' \
 	  'make profiles                      # list available environment profiles' \
 	  'make profile PROFILE=base|spatial  # switch/create matching profile branch' \
-	  'make lock PROFILE=spatial          # resolve locks using the selected build mode' \
+	  'make lock                          # resolve locks for the checked-out profile branch' \
 	  'make lock BUILD_AS_ROOT=1          # build with sudo, no fakeroot flags' \
 	  'make build                         # interactive image with RStudio (default)' \
 	  'make build RSTUDIO=0               # lightweight headless image' \
