@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd -P)"
+# shellcheck source=scripts/image-path.sh
+source "$root/scripts/image-path.sh"
 APPTAINER="${APPTAINER:-apptainer}"
-IMAGE="${IMAGE:-dist/environment.sif}"
+PROFILE="${PROFILE:-$(git -C "$root" branch --show-current 2>/dev/null || true)}"
+PROFILE="${PROFILE:-spatial}"
+RSTUDIO="${RSTUDIO:-1}"
+IMAGE="${IMAGE:-$(default_image_path "$root" "$PROFILE" "$RSTUDIO")}"
 PROJECT="${PROJECT:-$PWD}"
 DATA="${DATA:-$PROJECT/data}"
 RESULTS="${RESULTS:-$PROJECT/results}"

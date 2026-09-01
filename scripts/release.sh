@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd -P)"
+# shellcheck source=scripts/image-path.sh
+source "$root/scripts/image-path.sh"
 APPTAINER="${APPTAINER:-apptainer}"
-IMAGE="${IMAGE:-$root/dist/environment.sif}"
 RELEASE_VERSION="${RELEASE_VERSION:?set RELEASE_VERSION, e.g. manuscript-v1}"
 PROJECT_NAME="${PROJECT_NAME:-$(basename "$root")}"
+PROFILE="${PROFILE:-$(git -C "$root" branch --show-current 2>/dev/null || true)}"
 PROFILE="${PROFILE:-spatial}"
 RSTUDIO="${RSTUDIO:-1}"
+IMAGE="${IMAGE:-$(default_image_path "$root" "$PROFILE" "$RSTUDIO")}"
 [[ -f "$IMAGE" ]] || { echo "Image not found: $IMAGE" >&2; exit 5; }
 definition="$($root/scripts/render-definition.sh)"
 outdir="$root/release/$RELEASE_VERSION"
@@ -45,5 +48,7 @@ IMAGE_FILE=$(basename "$out")
 IMAGE_SHA256=$sha
 IMAGE_URL=
 IMAGE_ORAS=${PUBLISH_URI:-}
+PROFILE=$PROFILE
+RSTUDIO=$RSTUDIO
 EOF2
 printf 'Release prepared: %s\nSIF SHA256: %s\n' "$outdir" "$sha"

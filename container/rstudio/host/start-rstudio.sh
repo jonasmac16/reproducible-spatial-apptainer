@@ -2,8 +2,12 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/../../.." && pwd -P)"
+# shellcheck source=scripts/image-path.sh
+source "$root/scripts/image-path.sh"
 APPTAINER="${APPTAINER:-apptainer}"
-SIF="${SIF:-$root/dist/environment.sif}"
+PROFILE="${PROFILE:-$(git -C "$root" branch --show-current 2>/dev/null || true)}"
+PROFILE="${PROFILE:-spatial}"
+SIF="${SIF:-$(default_image_path "$root" "$PROFILE" 1)}"
 PROJECT="${PROJECT:-$PWD}"
 CONFIG="${RSTUDIO_CONFIG_HOST:-${HOME}/.config/rstudio}"
 PORT="${RSTUDIO_PORT:-8787}"

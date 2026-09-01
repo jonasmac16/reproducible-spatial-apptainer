@@ -118,6 +118,11 @@ Final image:
 make build BUILD_AS_ROOT=1
 ```
 
+Images are stored separately by profile and build mode. For example, the
+default interactive builds produce `dist/spatial/environment-interactive.sif`
+and headless builds produce `dist/spatial/environment-headless.sif`.
+Switching profiles therefore does not overwrite another profile's image.
+
 The final SIF contains the complete project R and Python environments. No host `.venv` or `renv/library` is required.
 
 ## R binary acceleration
@@ -207,7 +212,7 @@ The launcher refuses non-loopback unauthenticated exposure unless `RSTUDIO_ALLOW
 ## Runtime analysis
 
 ```bash
-IMAGE=dist/environment.sif \
+IMAGE=dist/spatial/environment-interactive.sif \
 PROJECT=$PWD \
 DATA=$PWD/data \
 RESULTS=$PWD/results \
@@ -217,7 +222,7 @@ RESULTS=$PWD/results \
 For NVIDIA GPUs:
 
 ```bash
-GPU=1 IMAGE=dist/environment.sif \
+GPU=1 IMAGE=dist/spatial/environment-interactive.sif \
 ./scripts/run-analysis.sh python scripts/model.py
 ```
 
