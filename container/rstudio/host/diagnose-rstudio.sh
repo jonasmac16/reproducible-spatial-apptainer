@@ -2,7 +2,11 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/../../.." && pwd -P)"
-SIF="${SIF:-$root/dist/environment.sif}"
+# shellcheck source=scripts/image-path.sh
+source "$root/scripts/image-path.sh"
+PROFILE="${PROFILE:-$(git -C "$root" branch --show-current 2>/dev/null || true)}"
+PROFILE="${PROFILE:-spatial}"
+SIF="${SIF:-$(default_image_path "$root" "$PROFILE" 1)}"
 STATE_ROOT="${RSTUDIO_STATE_ROOT:-${HOME}/.local/share/reproducible-env/rstudio}"
 RSTUDIO_USER="${RSTUDIO_USER:-$(id -un)}"
 

@@ -2,7 +2,6 @@ SHELL := /bin/bash
 APPTAINER ?= apptainer
 BUILD_AS_ROOT ?= 0
 BUILD_FLAGS ?=
-IMAGE ?= $(CURDIR)/dist/environment.sif
 PROJECT ?= $(CURDIR)
 RSTUDIO_CONFIG_HOST ?= $(HOME)/.config/rstudio
 CURRENT_BRANCH := $(shell git branch --show-current 2>/dev/null)
@@ -13,6 +12,12 @@ endif
 ifeq ($(strip $(RSTUDIO)),)
 RSTUDIO := 1
 endif
+ifeq ($(filter 0 false FALSE no NO,$(RSTUDIO)),)
+IMAGE_MODE := interactive
+else
+IMAGE_MODE := headless
+endif
+IMAGE ?= $(CURDIR)/dist/$(PROFILE)/environment-$(IMAGE_MODE).sif
 CMD ?= bash
 
 .PHONY: help profiles profile lock build test provenance rstudio rstudio-diagnose run release fetch clean distclean
@@ -67,4 +72,4 @@ clean:
 	rm -rf .build/*
 
 distclean: clean
-	rm -f env/python/uv.lock env/R/renv.lock dist/*.sif dist/*.sha256
+	rm -f env/python/uv.lock env/R/renv.lock dist/*.sif dist/*.sha256 dist/*/*.sif dist/*/*.sha256
