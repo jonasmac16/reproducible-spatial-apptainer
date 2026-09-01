@@ -4,12 +4,14 @@ root="$(cd "$(dirname "$0")/.." && pwd -P)"
 cd "$root"
 # shellcheck source=scripts/lib-build.sh
 source "$root/scripts/lib-build.sh"
+# shellcheck source=scripts/image-path.sh
+source "$root/scripts/image-path.sh"
 
 APPTAINER="${APPTAINER:-apptainer}"
-IMAGE="${IMAGE:-$root/dist/environment.sif}"
 PROFILE="${PROFILE:-$(git branch --show-current)}"
 [[ -n "$PROFILE" ]] || { echo "ERROR: cannot determine the current profile branch." >&2; exit 4; }
 RSTUDIO="${RSTUDIO:-1}"
+IMAGE="${IMAGE:-$(default_image_path "$root" "$PROFILE" "$RSTUDIO")}"
 current_branch="$(git branch --show-current)"
 [[ "$current_branch" == "$PROFILE" ]] || {
   echo "Current branch is '$current_branch', requested profile '$PROFILE'; run 'make profile PROFILE=$PROFILE' first." >&2

@@ -1,6 +1,7 @@
 .build/
 dist/*.sif
 dist/*.sha256
+dist/*/*.sha256
 *.sif
 .Rhistory
 .RData

@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd -P)"
+# shellcheck source=scripts/image-path.sh
+source "$root/scripts/image-path.sh"
 meta="${RELEASE_META:-${1:-$root/release/image.env}}"
 [[ -f "$meta" ]] || { echo "Release metadata not found: $meta" >&2; exit 6; }
 # shellcheck disable=SC1090
 source "$meta"
 : "${IMAGE_SHA256:?IMAGE_SHA256 missing from $meta}"
 IMAGE_FILE="${IMAGE_FILE:-environment.sif}"
-dest="${IMAGE_DEST:-$root/dist/environment.sif}"
+PROFILE="${PROFILE:-spatial}"
+RSTUDIO="${RSTUDIO:-1}"
+dest="${IMAGE_DEST:-$(default_image_path "$root" "$PROFILE" "$RSTUDIO")}"
 mkdir -p "$(dirname "$dest")"
 rm -f "$dest"
 if [[ -n "${IMAGE_ORAS:-}" ]]; then
