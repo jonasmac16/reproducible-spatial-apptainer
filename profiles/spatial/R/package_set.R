@@ -48,4 +48,8 @@ project_r_git_remotes <- list(
     url = "https://github.com/immunogenomics/presto.git",
     ref = "a24772a"
   ),
+  list(package = "BPCells",
+    url = "https://github.com/bnprks/BPCells/r",
+    ref = "016296413cd7a5725c8b35816df02365d7def853"
+  ),
 )
