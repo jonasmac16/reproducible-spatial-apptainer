@@ -21,7 +21,7 @@ project_r_packages <- c(
   "Seurat", "SeuratObject", "sctransform", "glmGamPoi", "batchelor",
 
   # Differential expression / multi-sample inference
-  "edgeR", "limma", "DESeq2", "muscat", "dreamlet", "DESpace",
+  "edgeR", "limma", "DESeq2", "muscat", "dreamlet", "DESpace", "MAST",
 
   # Large-data backends
   "BiocParallel", "DelayedArray", "SparseArray", "HDF5Array", "rhdf5",
@@ -30,7 +30,7 @@ project_r_packages <- c(
   "ComplexHeatmap", "dittoSeq", "clusterProfiler", "ggplot2", "patchwork",
 
   # Data manipulation / geospatial
-  "data.table", "dplyr", "tidyr", "purrr", "future", "future.apply", "sf", "terra",
+  "data.table", "dplyr", "tidyr", "tidyverse", "purrr", "future", "future.apply", "sf", "terra",
 
   # R -> Python
   "reticulate"
@@ -42,5 +42,14 @@ project_r_git_remotes <- list(
     package = "STdeconvolve",
     url = "https://github.com/JEFworks-Lab/STdeconvolve.git",
     ref = "13b1953263a5ce34e2471c4defebedbda44c7d08"
+  ),
+  list(
+    package = "presto",
+    url = "https://github.com/immunogenomics/presto.git",
+    ref = "3c97180d90d330524b5b8353a342ab2f4b990d21"
+  ),
+  list(package = "BPCells",
+    url = "https://github.com/bnprks/BPCells.git/r",
+    ref = "016296413cd7a5725c8b35816df02365d7def853"
   )
 )
