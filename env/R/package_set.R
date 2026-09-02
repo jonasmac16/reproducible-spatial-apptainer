@@ -49,7 +49,8 @@ project_r_git_remotes <- list(
     ref = "3c97180d90d330524b5b8353a342ab2f4b990d21"
   ),
   list(package = "BPCells",
-    url = "https://github.com/bnprks/BPCells.git/r",
+    url = "https://github.com/bnprks/BPCells.git",
+    subdir = "r",
     ref = "016296413cd7a5725c8b35816df02365d7def853"
   )
 )
