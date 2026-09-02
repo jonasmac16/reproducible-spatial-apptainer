@@ -23,9 +23,9 @@ CMD ?= bash
 .PHONY: help profiles profile lock build test provenance rstudio rstudio-diagnose run release fetch clean distclean
 help:
 	@printf '%s\n' \
-	  'make profiles                      # list available environment profiles' \
-	  'make profile PROFILE=base|spatial  # switch/create matching profile branch' \
-	  'make lock                          # resolve locks for the checked-out profile branch' \
+	'make profiles                      # list available environment profiles' \
+	'make profile PROFILE=name           # switch/create a profile branch' \
+	'make lock                          # resolve locks for the checked-out profile branch' \
 	  'make lock BUILD_AS_ROOT=1          # build with sudo, no fakeroot flags' \
 	  'make build                         # interactive image with RStudio (default)' \
 	  'make build RSTUDIO=0               # lightweight headless image' \

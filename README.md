@@ -84,9 +84,11 @@ the requested branch is already checked out.
 Each profile is maintained on a Git branch with the same name. Selecting a
 profile switches to that branch, creates it from the current branch when it
 does not exist, and preserves that branch's lockfiles. Profile switching is
-refused when the worktree has uncommitted changes. A newly created branch has
-its active manifests initialized and is ready for lock resolution; commit the
-manifests and generated locks on that profile branch.
+refused when the worktree has uncommitted changes. A newly created branch for
+an included profile has its manifests initialized from the profile templates.
+A new custom profile without a `profiles/<name>` directory inherits the
+current manifests. Both are ready for lock resolution; commit the manifests
+and generated locks on that profile branch.
 
 `base` is a compact scientific/interoperability environment. `spatial` is the complete spatial-transcriptomics stack developed for this project.
 

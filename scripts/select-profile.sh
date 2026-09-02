@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-profile="${1:?usage: select-profile.sh base|spatial}"
+profile="${1:?usage: select-profile.sh PROFILE}"
 root="$(cd "$(dirname "$0")/.." && pwd -P)"
 src="$root/profiles/$profile"
-[[ -d "$src" ]] || { echo "Unknown profile: $profile" >&2; exit 2; }
 cd "$root"
 
 current_branch="$(git branch --show-current)"
@@ -37,11 +36,15 @@ if [[ "$active_profile" != "$profile" ]]; then
     exit 5
   }
   rm -f env/python/uv.lock env/R/renv.lock
-  cp "$src/python/pyproject.toml" env/python/pyproject.toml
-  cp "$src/R/package_set.R" env/R/package_set.R
-  cp "$src/system-packages.txt" env/system-packages.txt
+  if [[ -d "$src" ]]; then
+    cp "$src/python/pyproject.toml" env/python/pyproject.toml
+    cp "$src/R/package_set.R" env/R/package_set.R
+    cp "$src/system-packages.txt" env/system-packages.txt
+    echo "Created and selected profile branch '$profile'; manifests initialized from its profile templates."
+  else
+    echo "Created and selected custom profile branch '$profile'; inherited current manifests."
+  fi
   printf '%s\n' "$profile" > env/PROFILE
-  echo "Created and selected profile branch '$profile'; manifests initialized."
 else
   echo "Selected existing profile branch '$profile'; existing lockfiles preserved."
 fi
