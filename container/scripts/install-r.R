@@ -67,6 +67,7 @@ if (identical(mode, "locked")) {
     for (remote in project_r_git_remotes) {
       remotes::install_git(
         remote$url,
+        subdir = remote$subdir,
         ref = remote$ref,
         lib = lib,
         dependencies = TRUE,
