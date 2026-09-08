@@ -6,6 +6,9 @@ export UV_PYTHON_INSTALL_DIR=/opt/uv-python
 export UV_PROJECT_ENVIRONMENT=/opt/project/python
 export UV_LINK_MODE=copy
 export UV_CACHE_DIR="${UV_CACHE_DIR:-/var/tmp/project-build/uv-cache}"
+export UV_CONCURRENT_BUILDS="${BUILD_JOBS:?BUILD_JOBS must be set}"
+export UV_CONCURRENT_DOWNLOADS="$BUILD_JOBS"
+export UV_CONCURRENT_INSTALLS="$BUILD_JOBS"
 mkdir -p "$UV_CACHE_DIR"
 
 if [[ -s uv.lock ]]; then

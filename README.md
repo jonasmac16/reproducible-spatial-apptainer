@@ -69,6 +69,9 @@ make lock BUILD_AS_ROOT=1 APPTAINER=/absolute/path/to/apptainer
 ```
 
 `BUILD_AS_ROOT=1` is only for image construction. Runtime does not require root.
+Package downloads, installations, and native compilation use all CPU cores
+allocated to the build by default. To limit parallelism for a memory-constrained
+build, set `BUILD_JOBS`, for example `make lock BUILD_JOBS=8`.
 
 ## Profiles
 
