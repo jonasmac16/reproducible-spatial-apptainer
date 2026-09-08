@@ -9,14 +9,17 @@ snapshot <- Sys.getenv("R_PPM_SNAPSHOT")
 cran_repo <- Sys.getenv("R_PPM_CRAN_URL")
 bioc_mirror <- Sys.getenv("R_PPM_BIOC_MIRROR")
 bioc_version <- Sys.getenv("BIOCONDUCTOR_VERSION")
+build_jobs <- suppressWarnings(as.integer(Sys.getenv("BUILD_JOBS", "")))
 
 stopifnot(nzchar(snapshot), nzchar(cran_repo), nzchar(bioc_mirror), nzchar(bioc_version))
+if (is.na(build_jobs) || build_jobs < 1L) stop("BUILD_JOBS must be a positive integer")
 
 # Posit Package Manager Linux binaries are selected using the distribution-specific
 # repository URL and R's platform user-agent. renv keeps exact package versions from
 # renv.lock while using this frozen repository as the download source.
 r_user_agent <- paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])
 options(
+  Ncpus = build_jobs,
   repos = c(CRAN = cran_repo),
   BioC_mirror = bioc_mirror,
   download.file.method = "curl",
@@ -45,6 +48,7 @@ message("R package repositories:")
 message("  CRAN snapshot: ", cran_repo)
 message("  Bioconductor mirror: ", bioc_mirror)
 message("  Bioconductor release: ", bioc_version)
+message("  Parallel build jobs: ", build_jobs)
 
 if (identical(mode, "locked")) {
   renv::restore(
@@ -60,6 +64,7 @@ if (identical(mode, "locked")) {
     project_r_packages,
     lib = lib,
     version = bioc_version,
+    Ncpus = build_jobs,
     ask = FALSE,
     update = FALSE
   )
