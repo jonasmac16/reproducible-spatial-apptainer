@@ -2,17 +2,28 @@
 name = "scientific-base"
 version = "1.0.0"
 description = "Compact R/Python scientific development profile"
-requires-python = ">=3.13,<3.14"
+requires-python = "==3.8.20"
 dependencies = [
-  "numpy",
-  "scipy",
-  "pandas",
+  "numpy==1.19.2",
+  "scipy==1.5.2",
+  "pandas==1.1.3",
   "matplotlib",
   "packaging",
   "jupyterlab",
   "ipykernel",
   "rpy2",
+  "torch",
+  "deep-forest==0.1.5",
+  "easydict==1.9",
+  "scanpy==1.8.1",
+  "scikit-learn==1.0.1",
+  "tqdm==4.50.2",
+  "Unidecode==1.3.0",
+  "bulk2space"
 ]
 
 [tool.uv]
 package = false
+
+[tool.uv.sources]
+bulk2space = { git = "https://github.com/ZJUFanLab/bulk2space", rev = "a956f7514206ec80eb5b7a3125455fe970ba0190" }
