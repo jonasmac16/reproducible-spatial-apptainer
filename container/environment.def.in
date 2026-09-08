@@ -30,12 +30,15 @@ From: @BASE_IMAGE@
   export TMPDIR=/var/tmp/project-build
   export UV_CACHE_DIR="$TMPDIR/uv-cache"
   export RSTUDIO_ENABLED="@RSTUDIO_ENABLED@"
+  export BUILD_JOBS="@BUILD_JOBS@"
+  export MAKEFLAGS="-j$BUILD_JOBS"
   mkdir -p "$TMPDIR" "$UV_CACHE_DIR" /opt/project/R/library /opt/project/python /opt/provenance
   chmod +x /opt/project/build-scripts/*.sh /opt/rstudio/*.sh
   {
     echo "PROFILE=@PROFILE@"
     echo "BUILD_MODE=@BUILD_MODE@"
     echo "RSTUDIO_ENABLED=$RSTUDIO_ENABLED"
+    echo "BUILD_JOBS=$BUILD_JOBS"
     echo "BUILD_DATE_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "SOURCE_COMMIT=recorded-by-release-manifest"
   } > /opt/provenance/build-info.env
@@ -87,6 +90,7 @@ From: @BASE_IMAGE@
 
 %environment
   export RSTUDIO_ENABLED="@RSTUDIO_ENABLED@"
+  export BUILD_JOBS="@BUILD_JOBS@"
   export BUILD_MODE="@BUILD_MODE@"
   export ENVIRONMENT_PROFILE="@PROFILE@"
   export PATH=/opt/project/python/bin:/usr/local/bin:$PATH

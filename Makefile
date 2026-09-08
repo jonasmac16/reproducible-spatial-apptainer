@@ -2,6 +2,7 @@ SHELL := /bin/bash
 APPTAINER ?= apptainer
 BUILD_AS_ROOT ?= 0
 BUILD_FLAGS ?=
+BUILD_JOBS ?= $(shell nproc 2>/dev/null || printf 1)
 PROJECT ?= $(CURDIR)
 RSTUDIO_CONFIG_HOST ?= $(HOME)/.config/rstudio
 CURRENT_BRANCH := $(shell git branch --show-current 2>/dev/null)
@@ -27,6 +28,7 @@ help:
 	  'make profile PROFILE=name           # switch/create a profile branch' \
 	  'make lock                          # resolve locks for the checked-out profile branch' \
 	  'make lock BUILD_AS_ROOT=1          # build with sudo, no fakeroot flags' \
+	  'make lock BUILD_JOBS=8              # limit package install/compile parallelism' \
 	  'make build                         # interactive image with RStudio (default)' \
 	  'make build RSTUDIO=0               # lightweight headless image' \
 	  'make test                          # run image %test again' \
@@ -42,10 +44,10 @@ profile:
 	./scripts/select-profile.sh '$(PROFILE)'
 
 lock:
-	APPTAINER='$(APPTAINER)' BUILD_AS_ROOT='$(BUILD_AS_ROOT)' BUILD_FLAGS='$(BUILD_FLAGS)' PROFILE='$(PROFILE)' RSTUDIO='$(RSTUDIO)' ./scripts/resolve-locks.sh
+	APPTAINER='$(APPTAINER)' BUILD_AS_ROOT='$(BUILD_AS_ROOT)' BUILD_FLAGS='$(BUILD_FLAGS)' BUILD_JOBS='$(BUILD_JOBS)' PROFILE='$(PROFILE)' RSTUDIO='$(RSTUDIO)' ./scripts/resolve-locks.sh
 
 build:
-	APPTAINER='$(APPTAINER)' BUILD_AS_ROOT='$(BUILD_AS_ROOT)' BUILD_FLAGS='$(BUILD_FLAGS)' IMAGE='$(IMAGE)' PROFILE='$(PROFILE)' RSTUDIO='$(RSTUDIO)' ./scripts/build.sh
+	APPTAINER='$(APPTAINER)' BUILD_AS_ROOT='$(BUILD_AS_ROOT)' BUILD_FLAGS='$(BUILD_FLAGS)' BUILD_JOBS='$(BUILD_JOBS)' IMAGE='$(IMAGE)' PROFILE='$(PROFILE)' RSTUDIO='$(RSTUDIO)' ./scripts/build.sh
 
 test:
 	$(APPTAINER) test '$(IMAGE)'
