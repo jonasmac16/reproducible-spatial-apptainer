@@ -12,6 +12,11 @@ dependencies = [
   "jupyterlab",
   "ipykernel",
   "rpy2",
+
+  # Dataset and container provenance
+  "datalad",
+  "datalad-metalad",
+  "datalad-container",
 ]
 
 [tool.uv]
