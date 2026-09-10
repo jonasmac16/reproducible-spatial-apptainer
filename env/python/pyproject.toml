@@ -19,7 +19,10 @@ dependencies = [
   "scikit-learn==1.0.1",
   "tqdm==4.50.2",
   "Unidecode==1.3.0",
-  "bulk2space"
+  "bulk2space",
+  "datalad",
+  "datalad-metalad",
+  "datalad-container"
 ]
 
 [tool.uv]

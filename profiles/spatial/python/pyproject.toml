@@ -60,6 +60,11 @@ dependencies = [
   "ipykernel",
   "jupytext",
   "papermill",
+
+  # Dataset and container provenance
+  "datalad",
+  "datalad-metalad",
+  "datalad-container",
 ]
 
 [tool.uv]
