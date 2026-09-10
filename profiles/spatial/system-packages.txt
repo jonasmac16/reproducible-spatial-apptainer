@@ -17,3 +17,4 @@ libopenslide-dev
 libvips-dev
 libgl1
 libopenblas-dev
+git-annex
