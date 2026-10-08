@@ -17,7 +17,15 @@ dependencies = [
   "datalad",
   "datalad-metalad",
   "datalad-container",
+
+  # spatialhub
+  "spatialhub",
+  "pyjnius"
 ]
 
 [tool.uv]
 package = false
+no-binary-package = ["pyjnius"]
+
+[tool.uv.sources]
+spatialhub = { git = "https://github.com/sansomlab/spatialhub.git", branch = "aj_dev" }
